@@ -1,1 +1,4 @@
-In no spammers, we are buiding a google chrome extension which is machine learning and Deep learning based. It will tell you the mails that you are receving in the inbox are spams or not. And further will also categorize them into the different malwares.
+# No Spammers
+• NO spammers is a Deep Learning based model where we can detect whether the mail received by any user is a spam or not. 
+• We are also categorically dividing the type of spam mails you are receiving. 
+• We are using robust regression approaches for data refining and predective algorithms to train the model.
