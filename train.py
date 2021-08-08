@@ -11,6 +11,9 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow.keras import backend as K
 import joblib
+import numpy as np
+np.random.seed(3)
+
 
 def encoder_cat_data(cat_cols : list, df : pd.DataFrame, is_train : bool):
     global cat_enc
@@ -145,7 +148,8 @@ def main():
         Console().print(xtrain.info())
         xtrain = preprocess_pipeline.fit_transform(xtrain)
         xtest = preprocess_pipeline.transform(xtest)
-        Console().status("successfully applied the pre-processing pipeline")
+        joblib.dump(preprocess_pipeline, "API/ML_model/preprocess.pkl")
+        Console().status("successfully applied the pre-processing pipeline and saved preprocess.pkl")
         #
         # xtrain = xtrain.values
         ytrain = ytrain.values
@@ -170,17 +174,25 @@ def main():
         Console().print(model.summary())
         model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc',f1_m,precision_m, recall_m])
 
-        checkpoint_filepath = 'weights.{epoch:02d}-{val_f1_m:.2f}.hdf5'
+        checkpoint_filepath = 'API/ML_model/weights.{epoch:02d}-{val_f1_m:.5f}.hdf5'
         model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_filepath,
             save_weights_only=True,
             monitor='val_f1_m',
             mode='max',
             save_best_only=True)
+        csv_logger = tf.keras.callbacks.CSVLogger('chart_logs.csv')
+        Console().print(type(xtrain))
+        Console().print(xtrain.shape)
+        Console().print(type(ytrain))
+        Console().print(ytrain.shape)
 
-        history = model.fit(xtrain, ytrain, validation_data=(xtest, ytest), epochs=3, verbose=1, batch_size=64, callbacks=[model_checkpoint_callback])
-        joblib.dump(history, f"history.pkl")
+        history = model.fit(xtrain, ytrain, validation_data=(xtest, ytest), epochs=3, verbose=1, batch_size=64, callbacks=[model_checkpoint_callback, csv_logger])
 
+
+
+
+        Console().print(f"saved the training results to chart_logs.csv")
 
 
 

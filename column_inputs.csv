@@ -1,9 +1,9 @@
 columns
-proto
-attack_cat
 service
 state
-id
+proto
+attack_cat
+ID_NO
 dur
 spkts
 dpkts
